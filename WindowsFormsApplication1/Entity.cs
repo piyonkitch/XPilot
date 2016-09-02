@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApplication1
 {
+    [Serializable]
     class Entity
     {
         public double xpos;
         public double ypos;
         public double m;            // 質量
         public double head_theta;   // 頭の向き 
-        private double emit;
+        protected double emit;
         public int  freeze;         // 死んでから復活するまでの tick 数
         public int  bang;           // 爆発中
+        public bool vanish;         // この世界から解放要
 
         // 速度
-        private double xvel;
-        private double yvel;
+        public double xvel;
+        public double yvel;
         private Random rnd = new Random();
 
         // 座標を初期化する
@@ -37,8 +39,8 @@ namespace WindowsFormsApplication1
 
         private void Relocate()
         {
-            xpos = rnd.Next(100);
-            ypos = rnd.Next(100);
+            xpos = rnd.Next(100) + 50;
+            ypos = rnd.Next(100) + 50;
             head_theta = 0;
             xvel = 0;
             yvel = 0;
@@ -131,7 +133,7 @@ namespace WindowsFormsApplication1
                     continue;
                 }
 
-                if (Math.Sqrt(Math.Pow((e.xpos - this.xpos), 2) + Math.Pow((e.ypos - this.ypos), 2)) < 2)
+                if (Math.Sqrt(Math.Pow((e.xpos - this.xpos), 2) + Math.Pow((e.ypos - this.ypos), 2)) < 3)
                 {
                     // 100 サイクル、爆発表示
                     this.bang = 100;
