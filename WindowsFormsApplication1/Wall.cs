@@ -5,7 +5,7 @@ namespace WindowsFormsApplication1
 {
     class Wall : Entity
     {
-         Random rnd = new Random();
+        Random rnd = new Random();
 
         // 座標を初期化する
         public Wall()
@@ -39,6 +39,12 @@ namespace WindowsFormsApplication1
 
         // 各物体間の引力から速度を更新→動かない
         public override void attract(List<Entity> elist)
+        {
+            ;
+        }
+
+        // 自動運転→動かない
+        public override void automove(List<Entity> elist)
         {
             ;
         }

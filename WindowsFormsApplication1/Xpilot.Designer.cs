@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApplication1
 {
-    partial class Form1
+    partial class Xpilot
     {
         /// <summary>
         /// 必要なデザイナー変数です。
@@ -64,15 +64,16 @@
             this.pic.TabStop = false;
             this.pic.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // Form1
+            // xpilot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(682, 653);
             this.Controls.Add(this.pic);
             this.Controls.Add(this.Count);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "Form1";
+            this.Name = "xpilot";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pic)).EndInit();

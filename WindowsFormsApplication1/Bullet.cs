@@ -11,6 +11,8 @@ namespace WindowsFormsApplication1
     {
         private Random rnd = new Random();
         private double shoot_speed = 5;
+        public int life     { get; private set; } = 30;
+        public int life_max { get; private set; } = 30;
 
         // Bullet 発射時の処理（この世界に登場)
         public Bullet(Entity e)
@@ -27,31 +29,37 @@ namespace WindowsFormsApplication1
             this.vanish = false;  // .Net が０にしてくれるはずだが念のため初期化。
         }
 
-        // 速度分を座標に追加
+        // pos += vel
         public override void tick()
         {
             xpos += xvel;
             ypos += yvel;
         }
 
-        // emit を速度に反映
+        // vel += emit 
         public override void move()
         {
-            // 誰かに当たったら消滅する
+            // if I hit somebody, ask game manager to remove me from this world.
             if (this.bang > 0)
             {
-                this.vanish = true; // このオブジェクトを管理している人に、この世界から開放してもらう。
+                this.vanish = true;
                 this.bang = 0;
             }
 
-            // スロットル
-            xvel += Math.Cos(head_theta) * emit;
-            yvel += Math.Sin(head_theta) * emit;
-            emit -= 0.1;
-            if (emit < 0)
+
+            // count down my life
+            if (this.life <= 0)
             {
-                emit = 0;
+                this.vanish = true;
+                this.bang = 0;
             }
+            this.life--;
+        }
+
+        // disable base class automove()
+        public override void automove(List<Entity> elist)
+        {
+            ;   // do nothing;
         }
     }
 }

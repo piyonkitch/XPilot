@@ -30,22 +30,22 @@ namespace WindowsFormsApplication1
         public void MapReadFile()   // ファイルからのリードは今後の課題にする
         {
             // 上
-            for (int x = 0; x < 400; x += 10)
+            for (int x = 0; x <= 400; x += 10)
             {
                 wlist.Add(new Wall(x, 0));
             }
             // 下
-            for (int x = 0; x < 400; x += 10)
+            for (int x = 0; x <= 400; x += 10)
             {
                 wlist.Add(new Wall(x, 400));
             }
             // 左
-            for (int y = 0; y < 400; y += 10)
+            for (int y = 0+10; y < 400; y += 10)
             {
                 wlist.Add(new Wall(0, y));
             }
             // 右
-            for (int y = 0; y < 400; y += 10)
+            for (int y = 0+10; y < 400; y += 10)
             {
                 wlist.Add(new Wall(400, y));
             }
