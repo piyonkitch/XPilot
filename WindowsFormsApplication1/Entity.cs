@@ -70,8 +70,8 @@ namespace Xpilot
         // Init (xpos, ypos)
         public Entity()
         {
-            xpos = rnd.Next(400);
-            ypos = rnd.Next(400);
+            xpos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
+            ypos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
             head_theta = 0;
             xvel = 0;
             yvel = 0;
@@ -87,15 +87,15 @@ namespace Xpilot
             survived_ticks[0] = 0;
         }
 
-        private void Relocate()
-        {
-            xpos = rnd.Next(100) + 50;
-            ypos = rnd.Next(100) + 50;
-            head_theta = 0;
-            xvel = 0;
-            yvel = 0;
-            emit = 0;
-        }
+//        private void Relocate()
+//        {
+//            xpos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
+//            ypos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
+//            head_theta = 0;
+//            xvel = 0;
+//            yvel = 0;
+//            emit = 0;
+//        }
 
         // pos += vel
         public virtual void tick()

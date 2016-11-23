@@ -56,24 +56,24 @@ namespace Xpilot
         public void MapReadFile()
         {
             // Upper walls
-            for (int x = 0; x <= 400; x += 5)
+            for (int x = 0; x <= XPilot.Constants.WorldSizeX; x += 5)
             {
                 wlist.Add(new Wall(x, 0));
             }
             // Lower walls
-            for (int x = 0; x <= 400; x += 5)
+            for (int x = 0; x <= XPilot.Constants.WorldSizeX; x += 5)
             {
-                wlist.Add(new Wall(x, 400));
+                wlist.Add(new Wall(x, XPilot.Constants.WorldSizeY));
             }
             // Leftmost walls
-            for (int y = 0+10; y < 400; y += 5)
+            for (int y = 0 + 5; y < XPilot.Constants.WorldSizeY; y += 5)
             {
                 wlist.Add(new Wall(0, y));
             }
             // Righmost walls
-            for (int y = 0+10; y < 400; y += 5)
+            for (int y = 0 + 5; y < XPilot.Constants.WorldSizeY; y += 5)
             {
-                wlist.Add(new Wall(400, y));
+                wlist.Add(new Wall(XPilot.Constants.WorldSizeX, y));
             }
 
             // Maybe we want to have random walls, natural walls or ...

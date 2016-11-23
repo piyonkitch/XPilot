@@ -39,17 +39,23 @@ namespace Xpilot
         const int num_hist = 10;
         public double distWallDanger = 70;   // default
         public double speedTooFast = 2.0;    // default
+        public double home_xpos;
+        public double home_ypos;
 
         private Random rnd = new Random();
 
         // Init (xpos, ypos)
         public Ship()
         {
-            xpos = rnd.Next(400);
-            ypos = rnd.Next(400);
+            home_xpos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
+            home_ypos = rnd.Next(XPilot.Constants.WorldSizeY - 50) + 25;
+            xpos = home_xpos;
+            ypos = home_ypos;
             head_theta = 0;
+
             xvel = 0;
             yvel = 0;
+
             m = 0.1;
             emit = 0;
             freeze = 0;
@@ -65,13 +71,13 @@ namespace Xpilot
             survived_ticks[0] = 0;
         }
 
-        public Ship(string nickName)
+        public Ship(string nickName) : this()
         {
             // constructor w/o args is called
             name = nickName;
         }
 
-        public Ship(string nickName, double dist, double speed)
+        public Ship(string nickName, double dist, double speed) : this()
         {
             // constructor w/o args is called
             name = nickName;
@@ -79,14 +85,18 @@ namespace Xpilot
             speedTooFast = speed;
         }
 
-        private void Relocate()
+        private void Home()
         {
-            xpos = rnd.Next(100) + 50;
-            ypos = rnd.Next(100) + 50;
+            xpos = home_xpos;
+            ypos = home_ypos;
+            Console.WriteLine("xpos:" + home_xpos + ", ypos:" + home_ypos);
             head_theta = 0;
+
             xvel = 0;
             yvel = 0;
+
             emit = 0;
+
             // survived (shift right)
             for (int i = num_hist - 2; 0 <= i; i--)
             {
@@ -105,7 +115,7 @@ namespace Xpilot
                 if (bang <= 0)
                 {
                     freeze = 100;
-                    Relocate();
+                    Home();
                 }
                 return;
             }

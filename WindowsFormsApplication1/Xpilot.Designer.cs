@@ -59,7 +59,7 @@
             this.pic.Location = new System.Drawing.Point(21, 11);
             this.pic.Margin = new System.Windows.Forms.Padding(2);
             this.pic.Name = "pic";
-            this.pic.Size = new System.Drawing.Size(600, 600);
+            this.pic.Size = new System.Drawing.Size(700, 600);
             this.pic.TabIndex = 13;
             this.pic.TabStop = false;
             // 
@@ -68,13 +68,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(682, 653);
+            this.ClientSize = new System.Drawing.Size(782, 653);
             this.Controls.Add(this.pic);
             this.Controls.Add(this.Count);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Xpilot";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "Xpilot";
             ((System.ComponentModel.ISupportInitialize)(this.pic)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

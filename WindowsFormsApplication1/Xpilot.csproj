@@ -63,6 +63,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Map.cs" />
