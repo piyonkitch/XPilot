@@ -9,6 +9,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Description = This shooting game is inspired by Xpilot <http://www.xpilot.org/>
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A460B382-F1E1-4B0F-BF82-D56EB5AE07EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

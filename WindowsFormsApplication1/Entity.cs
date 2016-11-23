@@ -1,10 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+Copyright(c) 2016, piyonkitch <kazuo.horikawa.ko@gmail.com>
+All rights reserved.
 
-namespace WindowsFormsApplication1
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of roguelike nor the names of its
+ contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+using System;
+using System.Collections.Generic;
+
+namespace Xpilot
 {
     [Serializable]
     class Entity
@@ -31,6 +57,14 @@ namespace WindowsFormsApplication1
         // mark that I am recognized by other entity
         public bool isRecognized;
 
+        // parameters to learn
+        public string name = "ship";
+        public string nickname = "ship";
+        const int num_hist = 10;
+        public int[] survived_ticks = new int[num_hist]; // array to store how long this ship survived.
+        public int gunTemp = 0;
+        public int gunHeater = 20;
+        
         private Random rnd = new Random();
 
         // Init (xpos, ypos)
@@ -45,6 +79,12 @@ namespace WindowsFormsApplication1
             emit = 0;
             freeze = 0;
             bang = 0;
+            // survived (shift right)
+            for (int i = num_hist-2; 0 <= i; i--)
+            {
+                survived_ticks[i+1] = survived_ticks[i];
+            }
+            survived_ticks[0] = 0;
         }
 
         private void Relocate()
@@ -60,25 +100,6 @@ namespace WindowsFormsApplication1
         // pos += vel
         public virtual void tick()
         {
-            // If I am banging, do not move.
-            if (bang > 0)
-            {
-                bang--;
-                if (bang <= 0)
-                {
-                    freeze = 100;
-                    Relocate();
-                }
-                return;
-            }
-
-            // Freeze is count down to rebirth
-            if (freeze > 0)
-            {
-                freeze--;
-                return;
-            }
-
             xpos += xvel;
             ypos += yvel;
         }
@@ -86,7 +107,6 @@ namespace WindowsFormsApplication1
         // vel += emit
         public virtual void move()
         {
-            // スロットル
             xvel += Math.Cos(head_theta) * emit;
             yvel += Math.Sin(head_theta) * emit;
             emit -= 0.1;
@@ -114,7 +134,7 @@ namespace WindowsFormsApplication1
                 }
 
                 r = distance(e, this);                
-                if (r >= 1)     // 距離０では重力はないものとする
+                if (r >= 1)     // ignore gravity if r < 1 as force becomes infinite.
                 {
                     theta = Math.Atan2(e.ypos - this.ypos, e.xpos - this.xpos);
                     a = e.m / Math.Pow(r, 2);
@@ -132,12 +152,13 @@ namespace WindowsFormsApplication1
         {
             foreach (Entity e in elist)
             {
-                if (e == this)  // 自分自身との衝突はしない
+                // Entity does not hit to itself.
+                if (e == this)
                 {
                     continue;
                 }
 
-                // 今爆発中なら、再度ヒット判定しない（毎サイクルヒットと判定されてしまうので)
+                // During banging, Entity does not start to bang again.
                 if (this.bang > 0)
                 {
                     continue;
@@ -145,8 +166,7 @@ namespace WindowsFormsApplication1
 
                 if (distance(e, this) < 3)
                 {
-                    // 100 サイクル、爆発表示
-                    this.bang = 100;
+                    this.bang = 100;    // Bang for 100 ticks
                     return true;
                 }
             }
@@ -154,19 +174,19 @@ namespace WindowsFormsApplication1
             return false;   // no hit
         }
 
-        // 右に旋回
+        // →
         public void turnRight()
         {
             head_theta += 0.1;
         }
 
-        // 左に旋回
+        // ←
         public void turnLeft()
         {
             head_theta -= 0.1;
         }
 
-        // スロットル
+        // Throttle engine
         public void throttle()
         {
             emit += .1;
@@ -176,90 +196,21 @@ namespace WindowsFormsApplication1
             }
         }
 
-        // 自動運転
-        public virtual void automove(List<Entity> elist)
+        public virtual void automove(List<Entity> elist, List<Entity> out_elist)
         {
-            Entity w;
-
-            // Find nearest wall and head against it.
-            w = findNearestWall(elist);
-            if (w != null)
-            {
-                double theta_tobe;
-                double theta_diff;
-
-                w.isRecognized = true;      // mark this wall is recognized by a ship
-
-                theta_tobe = Math.Atan2((this.ypos - w.ypos), (this.xpos - w.xpos));
-                theta_diff = theta_tobe - head_theta;
-                // be within -PI - PI
-                if (theta_diff > Math.PI)
-                {
-                    theta_diff -= (2 * Math.PI);
-                }
-                if (theta_diff < -Math.PI)
-                {
-                    theta_diff += (2 * Math.PI);
-                }
-                if ( ! ((-Math.PI <= theta_diff) && (theta_diff <= Math.PI)) )
-                {
-                    Console.WriteLine(theta_diff);
-                }
-
-                if ( 0.1 < theta_diff)
-                {
-                    head_theta += 0.1;
-                }
-                if (theta_diff < -0.1)
-                {
-                    head_theta -= 0.1;
-                }
-                // want to be within -PI - PI
-                if (head_theta > Math.PI)
-                {
-                    head_theta -= (2 * Math.PI);
-                }
-                if (head_theta < -Math.PI)
-                {
-                    head_theta += (2 * Math.PI);
-                }
-                if (!((-Math.PI <= head_theta) && (head_theta <= Math.PI)))
-                {
-                    Console.WriteLine(head_theta);
-                }
-
-                // 逆向きになっていたら、噴出する。
-                if ( ((theta_tobe - head_theta) > -(Math.PI / 4)) &&
-                     ((theta_tobe - head_theta) <  (Math.PI / 4)) )
-                {
-                    if (distance(this, w) < 10)
-                    {
-                        emit += .1;
-                    }
-                    else if (distance(this, w) < 30)
-                    {
-                        emit += .05;
-                    }
-
-                    // Do not burst too much.
-                    if (emit > 8)
-                    {
-                        emit = .8;
-                    }
-                }
-            }
+            ;   // do nothing
         }
 
-        // 認識状態関連
+        // Rec related thing
         public void clear_isRecognized()
         {
-            isRecognized = false;
+            this.isRecognized = false;
         }
 
         //
-        // 雑多な処理
+        // Misc.
         //
-        private Entity findNearestWall(List<Entity> elist)
+        protected Entity findNearestWall(List<Entity> elist)
         {
             Entity near_wall = null;
             double dist_min = 99999;
@@ -281,7 +232,7 @@ namespace WindowsFormsApplication1
             return near_wall;
         }
 
-        private double distance(Entity e1, Entity e2)
+        protected double distance(Entity e1, Entity e2)
         {
             return Math.Sqrt(Math.Pow((e1.xpos - e2.xpos), 2) 
                              +

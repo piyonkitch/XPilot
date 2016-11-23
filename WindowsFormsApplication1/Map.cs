@@ -1,23 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+Copyright(c) 2016, piyonkitch <kazuo.horikawa.ko@gmail.com>
+All rights reserved.
 
-namespace WindowsFormsApplication1
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of roguelike nor the names of its
+ contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+using System;
+using System.Collections.Generic;
+
+namespace Xpilot
 {
     [Serializable()]
     class Map
     {
         List<Entity> wlist;
 
-        // Entity のコレクタ
+        // wlist holds Walls.
         public Map()
         {
             wlist = new List<Entity>();
         }
 
-        // foreach で数えられるようにする
+        // IEnumerator makes this object enumerable.
         public IEnumerator<Entity> GetEnumerator()
         {
             foreach (Entity e in wlist)
@@ -26,36 +52,36 @@ namespace WindowsFormsApplication1
             }
         }
 
-        // ダミーのマップ
-        public void MapReadFile()   // ファイルからのリードは今後の課題にする
+        // REVISIT dummy map
+        public void MapReadFile()
         {
-            // 上
-            for (int x = 0; x <= 400; x += 10)
+            // Upper walls
+            for (int x = 0; x <= 400; x += 5)
             {
                 wlist.Add(new Wall(x, 0));
             }
-            // 下
-            for (int x = 0; x <= 400; x += 10)
+            // Lower walls
+            for (int x = 0; x <= 400; x += 5)
             {
                 wlist.Add(new Wall(x, 400));
             }
-            // 左
-            for (int y = 0+10; y < 400; y += 10)
+            // Leftmost walls
+            for (int y = 0+10; y < 400; y += 5)
             {
                 wlist.Add(new Wall(0, y));
             }
-            // 右
-            for (int y = 0+10; y < 400; y += 10)
+            // Righmost walls
+            for (int y = 0+10; y < 400; y += 5)
             {
                 wlist.Add(new Wall(400, y));
             }
 
-
-            for (int i = 160; i < 200; i += 10)
+            // Maybe we want to have random walls, natural walls or ...
+            for (int i = 160; i < 200; i += 5)
             {
                 wlist.Add(new Wall(i, 50));
             }
-            for (int i = 90; i < 120; i += 10)
+            for (int i = 90; i < 120; i += 5)
             {
                 wlist.Add(new Wall(200, i));
             }
