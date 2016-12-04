@@ -59,6 +59,9 @@ namespace Xpilot
             elist.Add(new Ship("ロ", 60, 1.8));
             System.Threading.Thread.Sleep(1000);
             elist.Add(new Ship("ハ", 70, 2.5));
+            System.Threading.Thread.Sleep(1000);
+            elist.Add(new Ship("ニ", 70, 2.5));
+            System.Threading.Thread.Sleep(1000);
 
             // homemade map
             map = new Map();
@@ -176,6 +179,8 @@ namespace Xpilot
             }
             if (Keyboard.IsKeyDown(Key.Z))
             {
+                // Adding a bullet to elist here is not beautiful.
+                // Entity or Ship class may want to add bullet to out_list.
                 if (myship.gunTemp <= 0)
                 {
                     Bullet bullet = new Bullet(myship); // Create a bullet that position and verocity are the same as myship.

@@ -36,6 +36,7 @@ namespace Xpilot
     class Map
     {
         List<Entity> wlist;
+        Random rnd = new Random();
 
         // wlist holds Walls.
         public Map()
@@ -76,14 +77,23 @@ namespace Xpilot
                 wlist.Add(new Wall(XPilot.Constants.WorldSizeX, y));
             }
 
-            // Maybe we want to have random walls, natural walls or ...
-            for (int i = 160; i < 200; i += 5)
+            // Ten walls in the space
+            for (int cnt = 0; cnt < 6; cnt++)
             {
-                wlist.Add(new Wall(i, 50));
-            }
-            for (int i = 90; i < 120; i += 5)
-            {
-                wlist.Add(new Wall(200, i));
+                int x;
+                int y;
+
+                x = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
+                x -= (x % 5); // round down at x00 or xx5
+
+                y = rnd.Next(XPilot.Constants.WorldSizeY - 50) + 25;
+                y -= (y % 5); // round down at x00 or xx5
+
+                // span X
+                for (int dx = 0; dx < 10; dx += 5)
+                {
+                    wlist.Add(new Wall(x + dx, y));
+                }
             }
         }
     }

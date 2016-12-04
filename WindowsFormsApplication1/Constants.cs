@@ -8,7 +8,8 @@ namespace XPilot
 {
     public class Constants
     {
-        public const int WorldSizeX = 500;
-        public const int WorldSizeY = 440;
+        public const int WorldSizeX = 500;  // Screen size X
+        public const int WorldSizeY = 440;  // Screen size Y
+        public const int GunHeater = 18;    // a bullet per 16 ticks
     }
 }

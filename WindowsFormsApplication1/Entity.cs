@@ -63,7 +63,7 @@ namespace Xpilot
         const int num_hist = 10;
         public int[] survived_ticks = new int[num_hist]; // array to store how long this ship survived.
         public int gunTemp = 0;
-        public int gunHeater = 20;
+        public int gunHeater = XPilot.Constants.GunHeater;
         
         private Random rnd = new Random();
 
@@ -86,16 +86,6 @@ namespace Xpilot
             }
             survived_ticks[0] = 0;
         }
-
-//        private void Relocate()
-//        {
-//            xpos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
-//            ypos = rnd.Next(XPilot.Constants.WorldSizeX - 50) + 25;
-//            head_theta = 0;
-//            xvel = 0;
-//            yvel = 0;
-//            emit = 0;
-//        }
 
         // pos += vel
         public virtual void tick()
