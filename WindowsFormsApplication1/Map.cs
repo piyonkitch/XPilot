@@ -77,7 +77,7 @@ namespace Xpilot
                 wlist.Add(new Wall(XPilot.Constants.WorldSizeX, y));
             }
 
-            // Ten walls in the space
+            // Several walls in the space
             for (int cnt = 0; cnt < 6; cnt++)
             {
                 int x;
