@@ -149,6 +149,7 @@ namespace Xpilot
             AVOID_WALL,
             CHASE_SHIP,
             FOLLOW_LEADER,
+            AVOID_LEADER,
         }
 
         // 自動運転
@@ -192,9 +193,23 @@ namespace Xpilot
                 }
                 else
                 {
-                    /* Follow leader */
-                    theta_tobe = Math.Atan2((shipLeader.ypos - this.ypos), (shipLeader.xpos - this.xpos));
-                    strategy = Strategy.FOLLOW_LEADER;
+                    if (distance(this, shipLeader) < 30)
+                    {
+                        theta_tobe = Math.Atan2((this.ypos - shipLeader.ypos), (this.xpos - shipLeader.xpos));
+                        strategy = Strategy.AVOID_LEADER;
+                    }
+                    else if (distance(this, elist[0]) < 100)
+                    {
+                        /* Chase myship */
+                        theta_tobe = Math.Atan2((elist[0].ypos - this.ypos), (elist[0].xpos - this.xpos));
+                        strategy = Strategy.CHASE_SHIP;
+                    }
+                    else
+                    {
+                        /* Follow leader */
+                        theta_tobe = Math.Atan2((shipLeader.ypos - this.ypos), (shipLeader.xpos - this.xpos));
+                        strategy = Strategy.FOLLOW_LEADER;
+                    }
                 }
             }
 
@@ -265,6 +280,16 @@ namespace Xpilot
                             emit += .15;
                         }
                         else if (distance(this, w) < 50)
+                        {
+                            emit += .1;
+                        }
+                        break;
+                    case Strategy.AVOID_LEADER:
+                        if (distance(this, shipLeader) < 15)
+                        {
+                            emit += .15;
+                        }
+                        else if (distance(this, shipLeader) < 30)
                         {
                             emit += .1;
                         }
