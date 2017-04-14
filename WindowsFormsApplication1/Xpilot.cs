@@ -56,11 +56,11 @@ namespace Xpilot
             System.Threading.Thread.Sleep(1000);
             elist.Add(new Ship("イ", 70, 2.0));
             System.Threading.Thread.Sleep(1000);
-            elist.Add(new Ship("ロ", 60, 1.8));
+            elist.Add(new Ship("ロ", 60, 1.8, (Ship)elist[1]));
             System.Threading.Thread.Sleep(1000);
             elist.Add(new Ship("ハ", 70, 2.5));
             System.Threading.Thread.Sleep(1000);
-            elist.Add(new Ship("ニ", 70, 2.5));
+            elist.Add(new Ship("ニ", 70, 2.5, (Ship)elist[3]));
             System.Threading.Thread.Sleep(1000);
 
             // homemade map

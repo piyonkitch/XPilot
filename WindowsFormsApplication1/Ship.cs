@@ -41,6 +41,7 @@ namespace Xpilot
         public double speedTooFast = 2.0;    // default
         public double home_xpos;
         public double home_ypos;
+        private Ship shipLeader = null;
 
         private Random rnd = new Random();
 
@@ -83,6 +84,11 @@ namespace Xpilot
             name = nickName;
             distWallDanger = dist;
             speedTooFast = speed;
+        }
+
+        public Ship(string nickName, double dist, double speed, Ship leader) : this(nickName, dist, speed)
+        {
+            shipLeader = leader;
         }
 
         private void Home()
@@ -142,6 +148,7 @@ namespace Xpilot
             REDUCE_SPEED,
             AVOID_WALL,
             CHASE_SHIP,
+            FOLLOW_LEADER,
         }
 
         // 自動運転
@@ -177,11 +184,17 @@ namespace Xpilot
                     theta_tobe = Math.Atan2((this.ypos - w.ypos), (this.xpos - w.xpos));
                     strategy = Strategy.AVOID_WALL;
                 }
-                else
+                else if (shipLeader == null) 
                 {
                     /* Chase myship */
                     theta_tobe = Math.Atan2((elist[0].ypos - this.ypos), (elist[0].xpos - this.xpos));
                     strategy = Strategy.CHASE_SHIP;
+                }
+                else
+                {
+                    /* Follow leader */
+                    theta_tobe = Math.Atan2((shipLeader.ypos - this.ypos), (shipLeader.xpos - this.xpos));
+                    strategy = Strategy.FOLLOW_LEADER;
                 }
             }
 
@@ -227,34 +240,37 @@ namespace Xpilot
             if ( ((theta_tobe - head_theta) > -(Math.PI / 4)) &&
                     ((theta_tobe - head_theta) <  (Math.PI / 4)) )
             {
-                if (strategy == Strategy.REDUCE_SPEED)
+                switch (strategy)
                 {
-                    emit += .05;
-                }
-                if (strategy == Strategy.CHASE_SHIP)
-                {
-                    emit += .05;
-                    if (gunTemp <= 0)
-                    {
-                        // Create a bullet that position and verocity are the same as myship.
-                        Bullet bullet = new Bullet(this);
-                        // As elist cannot be modifed, out_elist will be added later. 
-                        out_elist.Add(bullet);
-                        // gun temperature goes up after shooting. 
-                        gunTemp += gunHeater;              
-                        Console.WriteLine(gunTemp);
-                    }
-                }
-                else if (strategy == Strategy.AVOID_WALL)
-                {
-                    if (distance(this, w) < 30)
-                    {
-                        emit += .15;
-                    }
-                    else if (distance(this, w) < 50)
-                    {
-                        emit += .1;
-                    }
+                    case Strategy.REDUCE_SPEED:
+                    case Strategy.FOLLOW_LEADER:
+                        emit += .05;
+                        break;
+                    case Strategy.CHASE_SHIP:
+                        emit += .05;
+                        if (gunTemp <= 0)
+                        {
+                            // Create a bullet that position and verocity are the same as myship.
+                            Bullet bullet = new Bullet(this);
+                            // As elist cannot be modifed, out_elist will be added later. 
+                            out_elist.Add(bullet);
+                            // gun temperature goes up after shooting. 
+                            gunTemp += gunHeater;              
+                            Console.WriteLine(gunTemp);
+                        }
+                        break;
+                    case Strategy.AVOID_WALL:
+                        if (distance(this, w) < 30)
+                        {
+                            emit += .15;
+                        }
+                        else if (distance(this, w) < 50)
+                        {
+                            emit += .1;
+                        }
+                        break;
+                    default:
+                        break;
                 }
 
                 // Do not burst too much.
